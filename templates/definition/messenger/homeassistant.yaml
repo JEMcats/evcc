@@ -70,6 +70,30 @@ params:
     help:
       de: Farbe der Benachrichtigung als Hex-Code oder Name. Unter iOS die Hintergrundfarbe des Symbols.
       en: Notification color as hex code or name. On iOS the background color of the icon.
+  - name: url
+    example: "https://example.com/"
+    description:
+      de: Link bei Klick (iOS)
+      en: Click URL (iOS)
+    help:
+      de: Wird beim Anklicken der Benachrichtigung geöffnet (iOS). Kann eine relative URL zu deiner Home Assistant-Instanz sein, wie etwa /lovelace/test, oder eine vollständige URL, wie beispielsweise https://example.com.
+      en: Opened when you click the notification (iOS). Can be a relative URL to your Home Assistant instance, like /lovelace/test or a full URL like https://example.com.
+  - name: click_action
+    example: "https://example.com/"
+    description:
+      de: Link bei Klick (Android)
+      en: Click URL (Android)
+    help:
+      de: Wird beim Anklicken der Benachrichtigung geöffnet (Android). Kann eine relative URL zu deiner Home Assistant-Instanz sein, wie etwa /lovelace/test, oder eine vollständige URL, wie beispielsweise https://example.com.
+      en: Opened when you click the notification (Android). Can be a relative URL to your Home Assistant instance, like /lovelace/test or a full URL like https://example.com.
+  - name: interruption_level
+    example: time-sensitive
+    description:
+      de: Unterbrechungsgrad (iOS)
+      en: Interruption level (iOS)
+    help:
+      de: Kann einen der folgenden Zustände annehmen, „passive“, „active“, „time-sensitive“, „critical“. Siehe https://companion.home-assistant.io/docs/notifications/notifications-basic/#interruption-level.
+      en: Can be any of the following states, "passive", "active", "time-sensitive", "critical". See https://companion.home-assistant.io/docs/notifications/notifications-basic/#interruption-level.
 render: |
   type: homeassistant
   uri: {{ .uri }}
@@ -77,7 +101,7 @@ render: |
   {{- if .notify }}
   notify: {{ .notify }}
   {{- end }}
-  {{- if or .critical .group .notification_channel .notification_icon .color }}
+  {{- if or .critical .group .notification_channel .notification_icon .color .url .click_action .interruption_level }}
   data:
     {{- if .critical }}
     ttl: 0
@@ -94,5 +118,15 @@ render: |
     {{- end }}
     {{- if .color }}
     color: {{ quote .color }}
+    {{- end }}
+    {{- if .url }}
+    url: {{ quote .url }}
+    {{- end }}
+    {{- if .click_action }}
+    clickAction: {{ quote .click_action }}
+    {{- end }}
+    {{- if .interruption_level }}
+    push:
+      interruption-level: {{ quote .interruption_level }}
     {{- end }}
   {{- end }}
